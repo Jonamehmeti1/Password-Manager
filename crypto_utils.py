@@ -79,3 +79,19 @@ def encrypt_vault(vault_data: Dict[str, Any], master_password: str, existing_sal
         nonce=_b64encode(nonce),
         ciphertext=_b64encode(ciphertext),
     ).to_dict()
+
+
+def decrypt_vault(package: Dict[str, Any], master_password: str) -> Dict[str, Any]:
+    """Decrypt a vault package and return the plaintext vault dictionary."""
+    try:
+        salt = _b64decode(package["salt"])
+        nonce = _b64decode(package["nonce"])
+        ciphertext = _b64decode(package["ciphertext"])
+        iterations = int(package.get("iterations", PBKDF2_ITERATIONS))
+
+        key = derive_key(master_password, salt, iterations=iterations)
+        aesgcm = AESGCM(key)
+        plaintext = aesgcm.decrypt(nonce, ciphertext, associated_data=None)
+        return json.loads(plaintext.decode("utf-8"))
+    except (InvalidTag, KeyError, ValueError, json.JSONDecodeError) as exc:
+        raise VaultCryptoError("Wrong master password or corrupted vault file.") from exc
