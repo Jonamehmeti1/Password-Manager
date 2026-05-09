@@ -44,3 +44,22 @@ class VaultPackage:
 
 def _b64encode(data: bytes) -> str:
     return base64.b64encode(data).decode("utf-8")
+
+
+
+def _b64decode(data: str) -> bytes:
+    return base64.b64decode(data.encode("utf-8"))
+
+
+def derive_key(master_password: str, salt: bytes, iterations: int = PBKDF2_ITERATIONS) -> bytes:
+    """Derive a strong AES key from the user's master password."""
+    if not master_password:
+        raise ValueError("Master password cannot be empty.")
+
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=KEY_SIZE,
+        salt=salt,
+        iterations=iterations,
+    )
+    return kdf.derive(master_password.encode("utf-8"))
