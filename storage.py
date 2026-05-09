@@ -19,3 +19,9 @@ def create_empty_vault(master_password: str, path: Path = DEFAULT_VAULT_PATH) ->
 def load_vault(master_password: str, path: Path = DEFAULT_VAULT_PATH) -> Dict[str, Any]:
     package = load_package(path)
     return decrypt_vault(package, master_password)
+
+def save_vault(vault_data: Dict[str, Any], master_password: str, path: Path = DEFAULT_VAULT_PATH) -> None:
+    existing_salt = None
+    if path.exists():
+        try:
+            existing_salt = load_package(path).get("salt")
