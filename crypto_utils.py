@@ -40,3 +40,7 @@ class VaultPackage:
             "ciphertext": self.ciphertext,
         }
 
+
+
+def _b64encode(data: bytes) -> str:
+    return base64.b64encode(data).decode("utf-8")
