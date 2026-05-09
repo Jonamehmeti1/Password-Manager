@@ -63,3 +63,19 @@ def derive_key(master_password: str, salt: bytes, iterations: int = PBKDF2_ITERA
         iterations=iterations,
     )
     return kdf.derive(master_password.encode("utf-8"))
+
+def encrypt_vault(vault_data: Dict[str, Any], master_password: str, existing_salt: str | None = None) -> Dict[str, Any]:
+    """Encrypt the full vault dictionary using AES-256-GCM."""
+    salt = _b64decode(existing_salt) if existing_salt else os.urandom(SALT_SIZE)
+    nonce = os.urandom(NONCE_SIZE)
+    key = derive_key(master_password, salt)
+    aesgcm = AESGCM(key)
+
+    plaintext = json.dumps(vault_data, ensure_ascii=False, indent=2).encode("utf-8")
+    ciphertext = aesgcm.encrypt(nonce, plaintext, associated_data=None)
+
+    return VaultPackage(
+        salt=_b64encode(salt),
+        nonce=_b64encode(nonce),
+        ciphertext=_b64encode(ciphertext),
+    ).to_dict()
