@@ -51,3 +51,5 @@ def export_vault(destination: str, path: Path = DEFAULT_VAULT_PATH) -> None:
 
 def import_vault(source: str, path: Path = DEFAULT_VAULT_PATH) -> None:
     if not Path(source).exists():
+                raise FileNotFoundError("Selected vault file does not exist.")
+    shutil.copy2(source, path)
