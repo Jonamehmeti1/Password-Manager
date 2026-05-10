@@ -38,3 +38,7 @@ def load_package(path: Path = DEFAULT_VAULT_PATH) -> Dict[str, Any]:
     
     
 def save_package(package: Dict[str, Any], path: Path = DEFAULT_VAULT_PATH) -> None:
+    tmp_path = path.with_suffix(path.suffix + ".tmp")
+    with tmp_path.open("w", encoding="utf-8") as file:
+        json.dump(package, file, ensure_ascii=False, indent=2)
+    os.replace(tmp_path, path)
