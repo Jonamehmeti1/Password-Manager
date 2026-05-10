@@ -28,4 +28,8 @@ def save_vault(vault_data: Dict[str, Any], master_password: str, path: Path = DE
         except Exception:
             existing_salt = None
     package = encrypt_vault(vault_data, master_password, existing_salt=existing_salt)
-    save_package(package, path)    
+    save_package(package, path) 
+
+    def load_package(path: Path = DEFAULT_VAULT_PATH) -> Dict[str, Any]:
+    if not path.exists():
+        raise FileNotFoundError(f"Vault file not found: {path}")   
