@@ -47,3 +47,7 @@ def export_vault(destination: str, path: Path = DEFAULT_VAULT_PATH) -> None:
     if not path.exists():
         raise FileNotFoundError("No vault.enc file exists to export.")
     shutil.copy2(path, destination)
+
+
+def import_vault(source: str, path: Path = DEFAULT_VAULT_PATH) -> None:
+    if not Path(source).exists():
