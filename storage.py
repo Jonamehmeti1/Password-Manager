@@ -25,3 +25,7 @@ def save_vault(vault_data: Dict[str, Any], master_password: str, path: Path = DE
     if path.exists():
         try:
             existing_salt = load_package(path).get("salt")
+        except Exception:
+            existing_salt = None
+    package = encrypt_vault(vault_data, master_password, existing_salt=existing_salt)
+    save_package(package, path)    
