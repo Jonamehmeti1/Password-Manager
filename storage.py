@@ -30,10 +30,11 @@ def save_vault(vault_data: Dict[str, Any], master_password: str, path: Path = DE
     package = encrypt_vault(vault_data, master_password, existing_salt=existing_salt)
     save_package(package, path) 
 
-    def load_package(path: Path = DEFAULT_VAULT_PATH) -> Dict[str, Any]:
+def load_package(path: Path = DEFAULT_VAULT_PATH) -> Dict[str, Any]:
     if not path.exists():
         raise FileNotFoundError(f"Vault file not found: {path}")   
     with path.open("r", encoding="utf-8") as file:
         return json.load(file)
     
     
+def save_package(package: Dict[str, Any], path: Path = DEFAULT_VAULT_PATH) -> None:
