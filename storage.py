@@ -45,3 +45,5 @@ def save_package(package: Dict[str, Any], path: Path = DEFAULT_VAULT_PATH) -> No
 
 def export_vault(destination: str, path: Path = DEFAULT_VAULT_PATH) -> None:
     if not path.exists():
+        raise FileNotFoundError("No vault.enc file exists to export.")
+    shutil.copy2(path, destination)
